@@ -17,7 +17,7 @@ from api.models import Data
 def reminder():
 	date = datetime.now().strftime ("%d/%m/%Y") # considering date in dd/mm/yyyy
 	time = 	strftime("%I:%M %p", gmtime())	# strftime("%Y-%m-%d %H:%M:%S", gmtime()) for time in seconds also considering time in minutes only
-	print(date + " " + time)
+	#print(date + " " + time)
 	obj = Data.objects.filter(date=date,time=time)
 	for i in obj:
 		try:
