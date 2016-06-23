@@ -3,9 +3,10 @@ from __future__ import absolute_import
 from celery import shared_task
 from celery.decorators import periodic_task
 from celery.schedules import crontab
-
-from datetime import datetime
 from time import gmtime, strftime
+from datetime import datetime
+
+
 import smtplib
 import traceback
 
@@ -16,19 +17,22 @@ from api.models import Data
 def reminder():
 	date = datetime.now().strftime ("%d/%m/%Y") # considering date in dd/mm/yyyy
 	time = 	strftime("%I:%M %p", gmtime())	# strftime("%Y-%m-%d %H:%M:%S", gmtime()) for time in seconds also considering time in minutes only
-	#print(date + " " + time)
+	print(date + " " + time)
 	obj = Data.objects.filter(date=date,time=time)
 	for i in obj:
-		sendEmail(i.message)
-    
+		try:
+			sendEmail(i.message)
+		except:
+			traceback.print_exc()
+			   
 # i have just hard coded the toaddress field otherwise will
 # have to pass it from the model object, it's easy but didn't considered it because it may require more time.  
 def sendEmail(message):
 	fromaddr = 'infratab.rishabh@gmail.com'
-	toaddrs  = 'freaky.geek8567@gmail.com'
+	toaddrs  = 'freakygeek8567@gmail.com'
 	msg = "\r\n".join([
 		"From: infratab.rishabh@gmail.com",
-		"To: freaky.geek8567@gmail.com",
+		"To: freakygeek8567@gmail.com",
 		"Subject: Just a message",
 		"",
 		"Hello, This is Infratab, just giving you a reminder ", message
@@ -46,4 +50,5 @@ def sendEmail(message):
 		server.quit()
 	except:
 		traceback.print_exc()
+		raise
 		#print ("rishabh is bad boy failed to send mail")
